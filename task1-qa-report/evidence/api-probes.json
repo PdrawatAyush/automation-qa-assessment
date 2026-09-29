@@ -1,0 +1,328 @@
+{
+  "api": "http://localhost:3000/api",
+  "run": "d18aad",
+  "executedAt": "2026-09-29T17:03:51.569Z",
+  "results": [
+    {
+      "id": "P1",
+      "title": "Sign-up accepts a 1-character password",
+      "expected": "Sign-up rejects weak passwords (settings already requires >= 8 chars)",
+      "observed": "POST /users with password \"a\" -> 201; PUT /user with password \"b\" -> 422 {\"errors\":{\"password\":[\"must be at least 8 characters long\"]}}",
+      "bug": true,
+      "signup": {
+        "status": 201,
+        "ms": 307,
+        "json": {
+          "user": {
+            "id": 1,
+            "email": "weakpw_d18aad@example.test",
+            "username": "weakpw_d18aad",
+            "bio": null,
+            "image": null,
+            "token": "<redacted JWT>"
+          }
+        }
+      },
+      "settingsUpdate": {
+        "status": 422,
+        "ms": 29,
+        "json": {
+          "errors": {
+            "password": [
+              "must be at least 8 characters long"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "P2",
+      "title": "Sign-up accepts an invalid e-mail address",
+      "expected": "422 with an \"email is invalid\" message",
+      "observed": "POST /users with email \"not-an-email-d18aad\" -> 201, stored email = \"not-an-email-d18aad\"",
+      "bug": true,
+      "response": {
+        "status": 201,
+        "ms": 181,
+        "json": {
+          "user": {
+            "id": 2,
+            "email": "not-an-email-d18aad",
+            "username": "bademail_d18aad",
+            "bio": null,
+            "image": null,
+            "token": "<redacted JWT>"
+          }
+        }
+      }
+    },
+    {
+      "id": "P3",
+      "title": "E-mail addresses are case-sensitive (login fails / duplicate accounts)",
+      "expected": "Login with the same address in lower case succeeds; registering it again is rejected (409)",
+      "observed": "register Case.User_d18aad@Example.test -> 201; login as case.user_d18aad@example.test -> 401 {\"errors\":{\"credentials\":[\"invalid\"]}}; register case.user_d18aad@example.test again -> 201",
+      "bug": true,
+      "reg": {
+        "status": 201,
+        "ms": 198,
+        "json": {
+          "user": {
+            "id": 3,
+            "email": "Case.User_d18aad@Example.test",
+            "username": "caseuser_d18aad",
+            "bio": null,
+            "image": null,
+            "token": "<redacted JWT>"
+          }
+        }
+      },
+      "loginLower": {
+        "status": 401,
+        "ms": 36,
+        "json": {
+          "errors": {
+            "credentials": [
+              "invalid"
+            ]
+          }
+        }
+      },
+      "dup": {
+        "status": 201,
+        "ms": 184,
+        "json": {
+          "user": {
+            "id": 4,
+            "email": "case.user_d18aad@example.test",
+            "username": "caseuser2_d18aad",
+            "bio": null,
+            "image": null,
+            "token": "<redacted JWT>"
+          }
+        }
+      }
+    },
+    {
+      "id": "P4",
+      "title": "Usernames may contain URL-reserved characters (?, /, #, space)",
+      "expected": "Username restricted to URL-safe characters (or always URL-encoded by clients)",
+      "observed": "\"qa?tester_d18aad\": register 201, GET unencoded 404, GET encoded 404 | \"qa/tester_d18aad\": register 201, GET unencoded 405, GET encoded 404 | \"qa#tester_d18aad\": register 201, GET unencoded 404, GET encoded 200 | \"qa tester_d18aad\": register 201, GET unencoded 200, GET encoded 200",
+      "bug": true,
+      "rows": [
+        {
+          "username": "qa?tester_d18aad",
+          "register": 201,
+          "unencodedGet": 404,
+          "unencodedProfile": {
+            "errors": {
+              "profile": [
+                "not found"
+              ]
+            }
+          },
+          "encodedGet": 404
+        },
+        {
+          "username": "qa/tester_d18aad",
+          "register": 201,
+          "unencodedGet": 405,
+          "unencodedProfile": {
+            "error": true,
+            "url": "http://localhost:3000/api/profiles/qa/tester_d18aad",
+            "statusCode": 405,
+            "statusMessage": "Method get is not allowed on this route.",
+            "message": "Method get is not allowed on this route.",
+            "stack": [
+              "Method get is not allowed on this route.",
+              "at createError (C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/.local/realworld-api/node_modules/h3/dist/index.mjs:71:15)",
+              "at matchHandler (C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/.local/realworld-api/node_modules/h3/dist/index.mjs:2238:16)",
+              "at Object.handler (C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/.local/realworld-api/node_modules/h3/dist/index.mjs:2249:19)",
+              "at Object.handler (C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/.local/realworld-api/node_modules/h3/dist/index.mjs:2017:31)",
+              "at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+              "at async Server.toNodeHandle (C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/.local/realworld-api/node_modules/h3/dist/index.mjs:2316:7)"
+            ]
+          },
+          "encodedGet": 404
+        },
+        {
+          "username": "qa#tester_d18aad",
+          "register": 201,
+          "unencodedGet": 404,
+          "unencodedProfile": {
+            "errors": {
+              "profile": [
+                "not found"
+              ]
+            }
+          },
+          "encodedGet": 200
+        },
+        {
+          "username": "qa tester_d18aad",
+          "register": 201,
+          "unencodedGet": 200,
+          "unencodedProfile": "qa tester_d18aad",
+          "encodedGet": 200
+        }
+      ]
+    },
+    {
+      "id": "P5",
+      "title": "No rate limiting / lockout on failed logins",
+      "expected": "After a handful of failures the API throttles (429) or locks the account temporarily",
+      "observed": "30 wrong passwords in 3.7s -> status counts {\"401\":30}; correct password afterwards -> 200",
+      "bug": true,
+      "statuses": {
+        "401": 30
+      },
+      "seconds": 3.7
+    },
+    {
+      "id": "P6",
+      "title": "Logout does not invalidate the session token (60-day JWT, silently renewable)",
+      "expected": "Logout revokes the token server-side; tokens are short-lived",
+      "observed": "token lifetime = 60 days; GET /user with the \"logged-out\" token -> 200; response contains a NEW token = true (expires 2026-11-28T17:03:47.000Z)",
+      "bug": true,
+      "lifetimeDays": 60
+    },
+    {
+      "id": "P7",
+      "title": "Pagination parameters are not validated (negative offset -> 500)",
+      "expected": "400/422 for invalid values",
+      "observed": "offset=-1 -> 500 {\"error\":true,\"url\":\"http://localhost:3000/api/articles?offset=-1\",\"statusCode\":500,\"statusMessage\":\"Server Error\",\"message\":\"\\nInvalid `prisma.article.findMany; limit=-1 -> 200; offset=abc&limit=xyz -> 200",
+      "bug": true,
+      "neg": {
+        "status": 500,
+        "ms": 280,
+        "json": {
+          "error": true,
+          "url": "http://localhost:3000/api/articles?offset=-1",
+          "statusCode": 500,
+          "statusMessage": "Server Error",
+          "message": "\nInvalid `prisma.article.findMany()` invocation:\n\n\nAssertionError(\"Invalid value for skip argument: Value can only be positive, found: -1\")",
+          "stack": [
+            "",
+            "Invalid `prisma.article.findMany()` invocation:",
+            "",
+            "",
+            "AssertionError(\"Invalid value for skip argument: Value can only be positive, found: -1\")",
+            "at vn.handleRequestError (C:\\Users\\Ayush\\Desktop\\assignments\\automation-qa-assessment\\.local\\realworld-api\\node_modules\\@prisma\\client\\runtime\\client.js:65:8920)",
+            "at vn.handleAndLogRequestError (C:\\Users\\Ayush\\Desktop\\assignments\\automation-qa-assessment\\.local\\realworld-api\\node_modules\\@prisma\\client\\runtime\\client.js:65:7931)",
+            "at vn.request (C:\\Users\\Ayush\\Desktop\\assignments\\automation-qa-assessment\\.local\\realworld-api\\node_modules\\@prisma\\client\\runtime\\client.js:65:7638)",
+            "at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+            "at async a (C:\\Users\\Ayush\\Desktop\\assignments\\automation-qa-assessment\\.local\\realworld-api\\node_modules\\@prisma\\client\\runtime\\client.js:99:6934)",
+            "at async definePrivateEventHandler.requireAuth (C:\\Users\\Ayush\\Desktop\\assignments\\automation-qa-assessment\\.local\\realworld-api\\server\\routes\\api\\articles\\index.get.ts:14:21)",
+            "at async Object.handler (C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/.local/realworld-api/node_modules/h3/dist/index.mjs:2017:19)",
+            "at async Server.toNodeHandle (C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/.local/realworld-api/node_modules/h3/dist/index.mjs:2316:7)"
+          ]
+        }
+      },
+      "negLimit": {
+        "status": 200
+      }
+    },
+    {
+      "id": "P8",
+      "title": "Editing an article (even only its body) changes its URL; old links return 404",
+      "expected": "Slug stays the same when the title is unchanged; old URLs keep working (or redirect)",
+      "observed": "created slug \"Slug-stability-d18aad-f933522b\"; after body-only edit slug = \"Slug-stability-d18aad-1b3ed2ea\"; GET old slug -> 404 {\"errors\":{\"article\":[\"not found\"]}}",
+      "bug": true,
+      "oldSlug": "Slug-stability-d18aad-f933522b",
+      "newSlug": "Slug-stability-d18aad-1b3ed2ea",
+      "oldLinkStatus": 404
+    },
+    {
+      "id": "P9",
+      "title": "Duplicate tag in one article -> misleading error",
+      "expected": "Duplicates silently de-duplicated (or a clear \"duplicate tag\" message)",
+      "observed": "POST /articles with tagList [\"dupd18aad\",\"dupd18aad\"] -> 201 {\"article\":{\"slug\":\"Dup-tags-d18aad-99f72db2\",\"title\":\"Dup tags d18aad\",\"description\":\"d\",\"body\":\"b\",\"tagList\":[\"dupd18aad\"],\"createdAt\":\"2026-09-29T17:03:48.356Z\",\"updatedAt\":\"2026-09-29T17:03:48.356",
+      "bug": false,
+      "response": {
+        "status": 201,
+        "ms": 84,
+        "json": {
+          "article": {
+            "slug": "Dup-tags-d18aad-99f72db2",
+            "title": "Dup tags d18aad",
+            "description": "d",
+            "body": "b",
+            "tagList": [
+              "dupd18aad"
+            ],
+            "createdAt": "2026-09-29T17:03:48.356Z",
+            "updatedAt": "2026-09-29T17:03:48.356Z",
+            "favorited": false,
+            "favoritesCount": 0,
+            "author": {
+              "username": "author_d18aad",
+              "bio": null,
+              "image": null,
+              "following": false
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "P10",
+      "title": "Tags are not trimmed (\" qa \" and \"qa\" become different tags)",
+      "expected": "Tags trimmed / normalised before saving",
+      "observed": "POST /articles with tagList [\"  paddedd18aad  \",\"paddedd18aad\"] -> 201, saved tagList = [\"  paddedd18aad  \",\"paddedd18aad\"]",
+      "bug": true,
+      "response": [
+        "  paddedd18aad  ",
+        "paddedd18aad"
+      ]
+    },
+    {
+      "id": "P11",
+      "title": "No length limits: a 30000-character title creates an article that can never be opened",
+      "expected": "Title length validated (e.g. <= 200 chars) so every saved article is reachable",
+      "observed": "POST title length 30000 -> 201 (slug length 30009); GET /articles/<slug> -> 431 ",
+      "bug": true,
+      "createStatus": 201,
+      "slugLength": 30009,
+      "openStatus": 431
+    },
+    {
+      "id": "P12",
+      "title": "No request-size limit (10 MB article body accepted)",
+      "expected": "Request rejected with 413 above a sane limit (e.g. 1 MB)",
+      "observed": "POST 10 MB body -> 201 in 892 ms",
+      "bug": true,
+      "status": 201,
+      "ms": 892
+    },
+    {
+      "id": "P13",
+      "title": "HTML/JS in markdown body is stored verbatim (UI must sanitise it)",
+      "expected": "Stored as-is is acceptable only if every client sanitises on render",
+      "observed": "POST article with <img onerror>/<script>/javascript: link -> 201, slug Markup-d18aad-f2fc9039",
+      "bug": false,
+      "slug": "Markup-d18aad-f2fc9039"
+    },
+    {
+      "id": "P14",
+      "title": "A user can follow themself",
+      "expected": "422 \"cannot follow yourself\"",
+      "observed": "POST /profiles/<self>/follow -> 200, following = true",
+      "bug": true,
+      "status": 200
+    },
+    {
+      "id": "P15",
+      "title": "Other users cannot edit/delete my article or my comment (authorization)",
+      "expected": "403 for PUT/DELETE by another user; content unchanged",
+      "observed": "PUT by another user -> 403; DELETE article -> 403; DELETE comment -> 403; article afterwards -> 200, body \"original\"",
+      "bug": false
+    },
+    {
+      "id": "P7b",
+      "title": "Page size (limit) has no upper bound",
+      "expected": "limit capped (e.g. max 100) so one request cannot pull the whole table",
+      "observed": "limit=100000 -> 200, returned 19 of 19 articles in one response (default page = 10)",
+      "bug": true,
+      "returned": 19
+    }
+  ]
+}

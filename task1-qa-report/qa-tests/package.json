@@ -1,0 +1,14 @@
+{
+  "name": "conduit-qa-tests",
+  "private": true,
+  "description": "Automated reproduction of the Task 1 QA findings (Playwright + API probes)",
+  "type": "module",
+  "scripts": {
+    "probes": "node api-probes.mjs",
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "axe-core": "^4.13.0"
+  }
+}

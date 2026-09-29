@@ -1,0 +1,690 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\Users\\Ayush\\Desktop\\assignments\\automation-qa-assessment\\task1-qa-report\\qa-tests\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\Users\\Ayush\\Desktop\\assignments\\automation-qa-assessment\\task1-qa-report\\qa-tests\\playwright.config.ts",
+    "rootDir": "C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/task1-qa-report/qa-tests/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/task1-qa-report/qa-tests/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/Ayush/Desktop/assignments/automation-qa-assessment/task1-qa-report/qa-tests/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../evidence/playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "01-main-flows.spec.ts",
+      "file": "01-main-flows.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "security: script and event-handler markup in an article body is neutralised (XSS)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1318,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:03:55.265Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79256e1b3f5db51834fa-be7656836f3393ecacc6",
+          "file": "01-main-flows.spec.ts",
+          "line": 5,
+          "column": 1
+        },
+        {
+          "title": "main flows: sign up -> log out -> log in -> create -> edit -> comment -> delete -> log out",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4176,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "sign up",
+                      "duration": 935
+                    },
+                    {
+                      "title": "log out",
+                      "duration": 254
+                    },
+                    {
+                      "title": "log in",
+                      "duration": 486
+                    },
+                    {
+                      "title": "create article",
+                      "duration": 755
+                    },
+                    {
+                      "title": "edit article",
+                      "duration": 344
+                    },
+                    {
+                      "title": "add and delete a comment",
+                      "duration": 342
+                    },
+                    {
+                      "title": "delete article",
+                      "duration": 473
+                    },
+                    {
+                      "title": "log out again",
+                      "duration": 330
+                    }
+                  ],
+                  "startTime": "2026-09-29T17:03:57.048Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "79256e1b3f5db51834fa-5b43eaec36b6e1ba96ee",
+          "file": "01-main-flows.spec.ts",
+          "line": 21,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "02-bug-reproductions.spec.ts",
+      "file": "02-bug-reproductions.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[BUG-01] Feed shows \"Loading articles...\" forever when the API fails (expected: error + retry)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10768,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:01.265Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-fe802ecb61e81e9f3472",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 15,
+          "column": 1
+        },
+        {
+          "title": "[BUG-02] Editing only the body changes the article URL; old links break (expected: URL stays the same)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3125,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:12.054Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-7e539cd6a0680b932230",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 26,
+          "column": 1
+        },
+        {
+          "title": "[BUG-03] Logging out does not end the session on the server (expected: token revoked)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2934,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:15.201Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-51e507e2df972168649d",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 54,
+          "column": 1
+        },
+        {
+          "title": "[BUG-04] Unlimited password guessing - no rate limit or lockout (expected: 429 / temporary lock)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4583,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "30 wrong passwords in 4.1 s, all answered 401, account still unlocked\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:18.157Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-23907c308296f5c79821",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 78,
+          "column": 1
+        },
+        {
+          "title": "[BUG-05] Sign-up accepts an invalid e-mail and a 1-character password (expected: validation errors)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1728,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:22.758Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-22a8c49ef0c09a83c078",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 91,
+          "column": 1
+        },
+        {
+          "title": "[BUG-06] \"Not found\" / load errors render a completely blank page (expected: a clear message)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1736,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:24.512Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-1e45b4ed99ca6f2f225f",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 108,
+          "column": 1
+        },
+        {
+          "title": "[BUG-07a] \"Delete Article\" deletes instantly with no confirmation (expected: confirm step)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2348,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:26.269Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-9df677329b5877f73515",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 118,
+          "column": 1
+        },
+        {
+          "title": "[BUG-07b] A failed delete gives the user no feedback (expected: error message)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4154,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:28.638Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-d4300f54b13eb57e449a",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 137,
+          "column": 1
+        },
+        {
+          "title": "[BUG-08] Login is case-sensitive on e-mail (expected: Alice@X.com == alice@x.com)",
+          "ok": true,
+          "tags": [
+            "X.com",
+            "x.com)"
+          ],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1136,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:32.809Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-7893d2ba1be2b9e4d521",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 154,
+          "column": 1
+        },
+        {
+          "title": "[BUG-09] A username containing \"?\" makes the user's own profile page unreachable (expected: profile loads)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2009,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:33.964Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-5637e259d382aa29cd8b",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 171,
+          "column": 1
+        },
+        {
+          "title": "[BUG-10] No length/size limits: a very long title creates an article nobody can open (expected: validation)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3530,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:35.991Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-3c7417e2b4f0fe65a6d5",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 185,
+          "column": 1
+        },
+        {
+          "title": "[BUG-12] Invalid paging parameters crash the API with HTTP 500 and leak internal details (expected: 400)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 389,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:39.538Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-f5328ffecf792ae1fa16",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 215,
+          "column": 1
+        },
+        {
+          "title": "[BUG-13] Tags are not trimmed: \" news \" and \"news\" become two identical-looking tags (expected: one tag)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1693,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:39.942Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c5b185b95e41bf80f1bd-578124c7dc5efaea1615",
+          "file": "02-bug-reproductions.spec.ts",
+          "line": 226,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "03-accessibility.spec.ts",
+      "file": "03-accessibility.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "[BUG-11] WCAG 2.1 AA failures on every page (axe-core) + delete-comment icon is mouse-only",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4116,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "{\n  \"/register (signed out)\": {\n    \"color-contrast\": \"serious, 5 element(s)\",\n    \"html-has-lang\": \"serious, 1 element(s)\"\n  },\n  \"/ (home, signed out)\": {\n    \"color-contrast\": \"serious, 48 element(s)\",\n    \"html-has-lang\": \"serious, 1 element(s)\",\n    \"image-alt\": \"critical, 10 element(s)\",\n    \"link-name\": \"serious, 10 element(s)\"\n  },\n  \"/article/:slug (signed in, own comment)\": {\n    \"color-contrast\": \"serious, 18 element(s)\",\n    \"html-has-lang\": \"serious, 1 element(s)\",\n    \"image-alt\": \"critical, 5 element(s)\",\n    \"link-name\": \"serious, 3 element(s)\"\n  },\n  \"/editor (signed in)\": {\n    \"color-contrast\": \"serious, 5 element(s)\",\n    \"html-has-lang\": \"serious, 1 element(s)\",\n    \"image-alt\": \"critical, 1 element(s)\"\n  },\n  \"/settings (signed in)\": {\n    \"color-contrast\": \"serious, 6 element(s)\",\n    \"html-has-lang\": \"serious, 1 element(s)\",\n    \"image-alt\": \"critical, 1 element(s)\"\n  }\n}\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-09-29T17:04:41.679Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "484996a7c22a3cc9caac-e24e8c6c2db73711dbf1",
+          "file": "03-accessibility.spec.ts",
+          "line": 35,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-29T17:03:54.365Z",
+    "duration": 51940.72,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

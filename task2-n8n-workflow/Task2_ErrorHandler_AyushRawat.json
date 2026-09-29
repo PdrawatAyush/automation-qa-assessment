@@ -1,0 +1,111 @@
+{
+  "name": "Error Handler – alerts for failed workflows",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 🚨 Error Workflow (shared)\nSelected as **Settings → Error workflow** in the Morning Brief and the Uptime Monitor. When one of them fails with an unhandled error, n8n starts this workflow, which posts the failing workflow, node, message and execution link to Discord.",
+        "height": 220,
+        "width": 620,
+        "color": 3
+      },
+      "id": "5a6b7c8d-0901-4e5f-8a9b-000000000901",
+      "name": "Note",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -64,
+        -256
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "5a6b7c8d-0902-4e5f-8a9b-000000000902",
+      "name": "On workflow error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Error Workflow: any workflow that sets this as its \"Error workflow\" lands here when it fails.\nconst execution = $json.execution ?? {};\nconst trigger = $json.trigger ?? {};\nconst workflow = $json.workflow ?? {};\nconst error = execution.error ?? trigger.error ?? {};\nconst failedNode = execution.lastNodeExecuted ?? error.node?.name ?? 'unknown node';\nconst message = String(error.message ?? 'Unknown error').slice(0, 500);\nconst link = execution.url ? `\\n🔗 ${execution.url}` : '';\nreturn [{\n  json: {\n    content: `🚨 **Workflow failed: ${workflow.name ?? 'unknown'}**\\nNode: **${failedNode}** · mode: ${execution.mode ?? 'trigger'} · execution ${execution.id ?? '—'}\\n> ${message}${link}`,\n    workflow: workflow.name, failedNode, message,\n  },\n}];"
+      },
+      "id": "5a6b7c8d-0903-4e5f-8a9b-000000000903",
+      "name": "Format alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $json.content }}",
+        "options": {
+          "username": "Morning Brief",
+          "wait": true
+        }
+      },
+      "id": "5a6b7c8d-0904-4e5f-8a9b-000000000904",
+      "name": "Discord: send failure alert",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "webhookId": "6efddc1e-1c2e-4b44-956e-636c5fd6c1a9",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "dnRPuzOjseUFkk5b",
+          "name": "Discord webhook – Morning Brief"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On workflow error": {
+      "main": [
+        [
+          {
+            "node": "Format alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format alert": {
+      "main": [
+        [
+          {
+            "node": "Discord: send failure alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "Asia/Kolkata"
+  },
+  "versionId": "0ee088eb-65f4-4181-8bec-3e5376e786e5",
+  "meta": {
+    "instanceId": "25e460cd045fc3f3a2c029ff1414c72ba776959b8a5cd2f628ec647581d5129a"
+  },
+  "nodeGroups": [],
+  "id": "a8L2bNxribOMRMFr",
+  "tags": []
+}

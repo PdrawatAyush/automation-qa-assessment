@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Task 1 – Web App QA &amp; Debug Report – Ayush Rawat</title>
+<meta name="author" content="Ayush Rawat">
+<style>
+  @page { size: A4 portrait; margin: 14mm 15mm 16mm 15mm; }
+  @page wide { size: A4 landscape; margin: 11mm 12mm 14mm 12mm; }
+  .wide { page: wide; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif; font-size: 9.2pt; line-height: 1.38; color: #1d2433; margin: 0; }
+  h1 { font-size: 20pt; margin: 0 0 2mm; color: #12305a; letter-spacing: -.2px; }
+  h2 { font-size: 12pt; color: #12305a; margin: 4.5mm 0 2mm; padding-bottom: 1.2mm; border-bottom: 1.5px solid #d5deea; }
+  h3 { font-size: 10.5pt; margin: 4mm 0 1.5mm; color: #12305a; }
+  p { margin: 0 0 2.2mm; }
+  ul, ol { margin: 0 0 2.5mm; padding-left: 5mm; }
+  li { margin: 0 0 .8mm; }
+  code { font-family: Consolas, "Cascadia Mono", monospace; font-size: .92em; background: #eef2f7; padding: 0 .35em; border-radius: 3px; word-break: break-word; }
+  a { color: #1552a3; text-decoration: none; }
+  .sub { color: #4a5870; font-size: 9.8pt; margin: 0 0 1mm; }
+  .meta { color: #5d6b80; font-size: 8.8pt; margin-bottom: 3mm; }
+  .box { border: 1px solid #d5deea; background: #f6f8fb; border-radius: 6px; padding: 2.2mm 3.5mm; margin: 1.5mm 0 2mm; }
+  .box.key { border-left: 4px solid #12305a; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3mm; margin: 1mm 0 2mm; }
+  .kpi { border: 1px solid #d5deea; border-radius: 6px; padding: 1.4mm 2mm; text-align: center; }
+  .kpi b { display: block; font-size: 14pt; line-height: 1.1; }
+  .kpi span { font-size: 8.4pt; color: #4a5870; }
+  .kpi.high b { color: #b3261e; } .kpi.med b { color: #b45309; } .kpi.low b { color: #52606d; } .kpi.ok b { color: #1b7f3b; }
+  table.env { border-collapse: collapse; width: 100%; font-size: 8.4pt; line-height: 1.34; }
+  table.env th { text-align: left; width: 28mm; vertical-align: top; color: #33415a; padding: 1mm 2mm 1mm 0; font-weight: 600; }
+  table.env td { padding: 1mm 0; vertical-align: top; }
+  table.env tr + tr th, table.env tr + tr td { border-top: 1px solid #e6ecf3; }
+  .sev { display: inline-block; font-weight: 700; font-size: 8pt; padding: .4mm 2mm; border-radius: 10px; color: #fff; white-space: nowrap; }
+  .sev.High { background: #b3261e; } .sev.Medium { background: #b45309; } .sev.Low { background: #52606d; }
+  table.bugs { border-collapse: collapse; width: 100%; font-size: 7.55pt; line-height: 1.27; table-layout: fixed; }
+  table.bugs thead th { background: #12305a; color: #fff; text-align: left; padding: 1.4mm 1.5mm; font-size: 8pt; }
+  table.bugs td { border: 1px solid #d5deea; padding: 1.1mm 1.5mm; vertical-align: top; }
+  table.bugs tr { break-inside: avoid; }
+  table.bugs tbody tr:nth-child(even) td { background: #f8fafc; }
+  table.bugs td.n { text-align: center; font-weight: 700; font-size: 9.5pt; color: #12305a; }
+  table.bugs td.t b { display: block; font-size: 8.5pt; margin-bottom: .8mm; color: #12305a; }
+  table.bugs td.t .area { color: #5d6b80; font-size: 7.4pt; }
+  table.bugs ol { padding-left: 3.6mm; margin: 0; }
+  table.bugs li { margin: 0 0 .4mm; }
+  .ev { color: #1552a3; font-size: 7.3pt; display: block; margin-top: .8mm; }
+  .exp { display: block; margin-bottom: 1mm; }
+  .exp::before { content: "Expected: "; font-weight: 700; color: #1b7f3b; }
+  .act::before { content: "Actual: "; font-weight: 700; color: #b3261e; }
+  .legend { font-size: 8pt; color: #4a5870; margin: 0 0 2mm; }
+  .rca p { margin-bottom: 2mm; text-align: justify; }
+  pre { font-family: Consolas, "Cascadia Mono", monospace; font-size: 7.3pt; background: #0f1b2d; color: #e6edf6; padding: 3mm 3.5mm; border-radius: 6px; white-space: pre-wrap; margin: 1.5mm 0 3mm; line-height: 1.38; }
+  pre .add { color: #7ee2a8; } pre .del { color: #ff9b9b; } pre .cm { color: #9fb3c8; }
+  .shots { display: grid; grid-template-columns: repeat(2, 118mm); justify-content: center; gap: 3mm 7mm; }
+  figure { margin: 0; break-inside: avoid; }
+  figure img { width: 100%; border: 1px solid #c9d3df; border-radius: 4px; display: block; }
+  figcaption { font-size: 8pt; color: #33415a; margin-top: 1mm; line-height: 1.3; }
+  figcaption b { color: #12305a; }
+  .pb { break-before: page; }
+  .small { font-size: 8.6pt; color: #4a5870; }
+  .tick li::marker { content: "✔  "; color: #1b7f3b; }
+</style>
+</head>
+<body>
+
+<!-- ============================ PAGE 1 : SUMMARY ============================ -->
+<h1>Task 1 — Web App QA &amp; Debug Report</h1>
+<p class="sub">App under test: <b>Conduit</b> (RealWorld “Medium clone”) — Angular frontend + Nitro/Prisma/SQLite API, run locally</p>
+<p class="meta">Prepared by <b>Ayush Rawat</b> · Automation &amp; QA Developer assessment · Tested 29 September 2026</p>
+
+<div class="kpis">
+  <div class="kpi high"><b>5</b><span>High</span></div>
+  <div class="kpi med"><b>6</b><span>Medium</span></div>
+  <div class="kpi low"><b>2</b><span>Low</span></div>
+  <div class="kpi ok"><b>16 / 16</b><span>automated checks green (2 checks + 14 repros)</span></div>
+</div>
+
+<h2>1. Summary for stakeholders</h2>
+<p><b>Bottom line:</b> the basic journeys work — sign-up, log-in, writing, editing and deleting an article, commenting and logging out all pass an automated end-to-end test. The app is <b>not production-ready</b>, though: I found <b>13 issues (5 High, 6 Medium, 2 Low)</b>. Every one was reproduced at least twice and is backed by an automated test, a screenshot or a raw HTTP log.</p>
+
+<div class="box key">
+<b>Why users say it “feels broken” — the three most likely causes</b>
+<ol>
+  <li><b>Any server hiccup freezes the home page</b> on “Loading articles…” forever — no message, no retry (#1).</li>
+  <li><b>Every edit gives an article a new web address</b>, so links shared earlier open a <b>blank white page</b> (#2, #6).</li>
+  <li><b>Capital letters in an e-mail address lock people out</b> — “credentials invalid” although the password is right (#8).</li>
+</ol>
+<b>Biggest business risk — account security:</b> 1-character passwords are accepted (#5), password guessing is unlimited (#4), and “log out” does not end the session: a copied session token keeps working for 60 days and can even renew itself (#3).
+</div>
+
+<h3>Recommended order of fixes</h3>
+<ol>
+  <li><b>Security first:</b> server-side password/e-mail rules, login rate-limiting and real logout (session revocation, shorter tokens) — #3, #4, #5.</li>
+  <li><b>“Feels broken” fixes:</b> error + retry states wherever data loads, and a proper “not found” page — #1, #6, #7.</li>
+  <li><b>Stable article URLs</b> — #2 (a 3-line fix, already verified locally; see §4).</li>
+  <li><b>Input hygiene:</b> normalise e-mails, restrict usernames, add length/size limits — #8, #9, #10, #12, #13; then accessibility — #11.</li>
+</ol>
+
+<h2>2. Scope, approach and environment</h2>
+<table class="env">
+  <tr><th>App</th><td>Conduit, the RealWorld reference app. Frontend: <code>realworld-apps/angular-realworld-example-app</code> @ <code>dd99ed2</code> (Angular 21) — the same frontend that powers the official demo. Backend: <code>realworld-apps/nitro-prisma-zod-realworld-example-app</code> @ <code>c8c6685</code> (Nitro, Prisma 7, SQLite) — one of the two backends the project lists as fully spec-compliant.</td></tr>
+  <tr><th>Why run it locally</th><td>The live-demo link in the brief is dead on the test date (<code>demo.realworld.io</code> → HTTP 404, <code>api.realworld.io</code> → HTTP 530; the project moved to <code>realworld.show</code>). Running locally also keeps test accounts off a shared public service and lets me reset the database so every result is repeatable.</td></tr>
+  <tr><th>Only change made</th><td>The frontend hard-codes <code>https://api.realworld.show/api</code>; I pointed it at <code>http://localhost:3000/api</code> (one line). Nothing else was modified.</td></tr>
+  <tr><th>Machine</th><td>Windows 11 · Node 24.17 · Google Chrome 154 · API on :3000, frontend on :4200.</td></tr>
+  <tr><th>Flows covered</th><td>Sign-up, log-in, create, edit, delete, comment, favourite/follow, log-out — plus the edge cases suggested in the brief: very long inputs, special characters, simulated network failure, logged-out/expired session, weak credentials.</td></tr>
+  <tr><th>How</th><td>(1) Read the source to form hypotheses → (2) exploratory testing in the browser → (3) <b>API probes</b> (Node script, raw HTTP evidence) → (4) <b>Playwright</b> reproduction test + screenshot for every UI issue → (5) <b>axe-core 4.13</b> audit against WCAG 2.1 AA. Final run on a fresh database: <b>16/16 green</b>.</td></tr>
+  <tr><th>Severity scale</th><td><b>Critical</b> outage / data breach / data loss for many users, no workaround · <b>High</b> core journey broken or serious security weakness · <b>Medium</b> feature partly broken or confusing, workaround exists · <b>Low</b> minor, cosmetic or API-only.</td></tr>
+</table>
+
+<!-- ============================ BUG TABLE (landscape) ============================ -->
+<section class="wide pb">
+<h2 style="margin-top:0">3. Issues found (template from section 5 of the brief)</h2>
+<p class="legend">Ordered by severity. <b>Evidence:</b> A1–A12 = screenshots in Appendix A · BUG-xx = Playwright test in <code>qa-tests/tests</code> · Pxx = API probe in <code>evidence/api-probes.json</code>. File references point to the tested commits.</p>
+<table class="bugs">
+  <colgroup><col style="width:4%"><col style="width:17%"><col style="width:20%"><col style="width:24%"><col style="width:7.5%"><col style="width:27.5%"></colgroup>
+  <thead><tr><th>#</th><th>Title / Summary</th><th>Steps to Reproduce</th><th>Expected vs Actual</th><th>Severity</th><th>Suspected Cause</th></tr></thead>
+  <tbody>
+  <tr>
+    <td class="n">1</td>
+    <td class="t"><b>Home feed never finishes loading when the API has a problem</b><span class="area">Error handling</span><span class="ev">A1 · BUG-01</span></td>
+    <td><ol><li>Make the API unavailable (stop it, or DevTools › Network › Offline).</li><li>Open the home page.</li><li>Wait 10+ seconds.</li></ol></td>
+    <td><span class="exp">a clear “Couldn’t load articles” message with a Retry button (and/or automatic retry).</span><span class="act">“Loading articles…” and “Loading tags…” stay forever. No error, no retry — only a manual reload helps.</span></td>
+    <td><span class="sev High">High</span></td>
+    <td><code>ArticleListComponent.runQuery()</code> subscribes with a success handler only (<code>article-list.component.ts:124</code>). The API error is never caught, so the loading state is never cleared and nothing is shown.</td>
+  </tr>
+  <tr>
+    <td class="n">2</td>
+    <td class="t"><b>Editing an article changes its web address — links shared earlier stop working</b><span class="area">Functional</span><span class="ev">A2–A3 · BUG-02 · P8 · fix verified (§4)</span></td>
+    <td><ol><li>Log in, publish an article, copy its URL.</li><li>“Edit Article”, change one word in the <i>body</i> only, “Publish Article”.</li><li>Compare URLs; open the copied one.</li></ol></td>
+    <td><span class="exp">URL unchanged when the title is unchanged; old links keep working.</span><span class="act">every save creates a new random URL suffix; the old URL returns 404 and shows a blank page (see #6).</span></td>
+    <td><span class="sev High">High</span></td>
+    <td>The API regenerates the slug whenever a <code>title</code> field is present in an update (<code>articles/[slug]/index.put.ts:35</code>), and the editor always re-sends the unchanged title (<code>editor.component.ts:80</code>). Full analysis in §4.</td>
+  </tr>
+  <tr>
+    <td class="n">3</td>
+    <td class="t"><b>Logging out does not end the session; tokens live 60 days and renew themselves</b><span class="area">Security</span><span class="ev">BUG-03 · P6</span></td>
+    <td><ol><li>Log in; copy <code>jwtToken</code> from DevTools › Local Storage.</li><li>Settings › “Or click here to logout”.</li><li><code>GET /api/user</code> with header <code>Authorization: Token &lt;copied&gt;</code>.</li></ol></td>
+    <td><span class="exp">401 — token revoked at logout; short-lived tokens.</span><span class="act">200 OK, and the reply contains a <i>fresh</i> 60-day token. A leaked token (shared PC, logs, XSS) gives indefinite access.</span></td>
+    <td><span class="sev High">High</span></td>
+    <td>Logout only deletes the token in the browser (<code>user.service.ts:85</code>); no server-side session or deny-list; <code>expiresIn: '60d'</code> (<code>generate-token.ts:6</code>); <code>GET /user</code> re-issues a token on every call (<code>user/index.get.ts:21</code>).</td>
+  </tr>
+  <tr>
+    <td class="n">4</td>
+    <td class="t"><b>Unlimited password guessing — no rate limit or lockout</b><span class="area">Security</span><span class="ev">BUG-04 · P5</span></td>
+    <td><ol><li>Register an account.</li><li>Send 30 <code>POST /api/users/login</code> with wrong passwords.</li><li>Log in with the right password.</li></ol></td>
+    <td><span class="exp">after ~5–10 failures: HTTP 429, delay or temporary lock (or CAPTCHA).</span><span class="act">30 wrong guesses answered 401 in 3.7 s, never throttled; the right password still works at once. With #5, weak accounts can be guessed in seconds.</span></td>
+    <td><span class="sev High">High</span></td>
+    <td>No rate-limiting or failed-attempt tracking on <code>users/login.post.ts</code>, and nothing in front of the API (gateway / WAF) that adds it.</td>
+  </tr>
+  <tr>
+    <td class="n">5</td>
+    <td class="t"><b>Sign-up accepts an invalid e-mail and a 1-character password</b><span class="area">Validation · Security</span><span class="ev">A4 · BUG-05 · P1–P2</span></td>
+    <td><ol><li>Open “Sign up”.</li><li>Any username, e-mail <code>not-an-email</code>, password <code>a</code>.</li><li>Click “Sign up”.</li></ol></td>
+    <td><span class="exp">inline errors: “enter a valid e-mail”, “password must be at least 8 characters”.</span><span class="act">account created and logged in. Inconsistent: changing the password in Settings <i>does</i> require 8+ characters.</span></td>
+    <td><span class="sev High">High</span></td>
+    <td>Register schema only checks “not blank” (<code>user.schema.ts:5,7</code> — <code>min(1)</code>, no <code>.email()</code>) while the update schema enforces <code>min(8)</code> (<code>:25</code>). The form uses only <code>Validators.required</code>; the e-mail input is <code>type="text"</code>.</td>
+  </tr>
+  <tr>
+    <td class="n">6</td>
+    <td class="t"><b>“Not found” and loading errors show a blank white page</b><span class="area">Error handling · UX</span><span class="ev">A3, A5 · BUG-06</span></td>
+    <td><ol><li>Open <code>/article/this-article-does-not-exist</code> (or an old link from #2, or the profile from #9).</li></ol></td>
+    <td><span class="exp">a friendly “This article doesn’t exist or was moved” message with a way back.</span><span class="act">empty page. The API <i>did</i> answer <code>404 {"errors":{"article":["not found"]}}</code>, but the UI throws the message away.</span></td>
+    <td><span class="sev Medium">Medium</span></td>
+    <td>Data-shape mismatch: <code>article.component.ts:73</code> and <code>profile.component.ts:46</code> store <code>err.errors</code>, but <code>ListErrorsComponent</code> reads <code>.errors</code> again (<code>list-errors.component.ts:13</code>), finds nothing and renders an empty list. Even the fallback message has the wrong shape.</td>
+  </tr>
+  <tr>
+    <td class="n">7</td>
+    <td class="t"><b>“Delete Article” is one click with no confirmation — and a failed delete is silent</b><span class="area">UX · Error handling</span><span class="ev">A6 · BUG-07a/b</span></td>
+    <td><ol><li>Open one of your articles; click “Delete Article”.</li><li>Repeat while the delete request fails (DevTools › block request / server error).</li></ol></td>
+    <td><span class="exp">“Delete this article?” confirmation (or Undo); on failure an error message and the button re-enabled.</span><span class="act">(1) deleted instantly and permanently. (2) nothing happens — no message; the user stays on the page not knowing why.</span></td>
+    <td><span class="sev Medium">Medium</span></td>
+    <td>The button calls <code>deleteArticle()</code> directly (<code>article.component.html:26,73</code>), which subscribes with a success callback only (<code>article.component.ts:116</code>). “Disabled” is just a CSS class.</td>
+  </tr>
+  <tr>
+    <td class="n">8</td>
+    <td class="t"><b>E-mail treated as case-sensitive → “credentials invalid” and duplicate accounts</b><span class="area">Functional</span><span class="ev">A7 · BUG-08 · P3</span></td>
+    <td><ol><li>Sign up as <code>Alice@Example.com</code>.</li><li>Log out; log in as <code>alice@example.com</code> with the right password.</li><li>Sign up again with <code>alice@example.com</code>.</li></ol></td>
+    <td><span class="exp">login works (addresses are case-insensitive in practice); second sign-up rejected as “already taken”.</span><span class="act">login fails with “credentials invalid”; the lower-case address opens a second, separate account.</span></td>
+    <td><span class="sev Medium">Medium</span></td>
+    <td>E-mail is stored exactly as typed and matched exactly (<code>users/login.post.ts:11</code>; SQLite compares case-sensitively). No normalisation (trim + lower-case) at sign-up or login.</td>
+  </tr>
+  <tr>
+    <td class="n">9</td>
+    <td class="t"><b>Usernames containing <code>?</code>, <code>/</code> or <code>#</code> make the user’s profile unreachable</b><span class="area">Validation</span><span class="ev">A8 · BUG-09 · P4</span></td>
+    <td><ol><li>Sign up with username <code>qa?tester</code>.</li><li>Click your name in the top bar.</li></ol></td>
+    <td><span class="exp">profile opens (or sign-up rejects unsupported characters).</span><span class="act">the app asks the API for user “qa” (404) → blank page. <code>/</code> and <code>#</code> fail too; for <code>?</code> and <code>/</code> even correctly encoded requests fail.</span></td>
+    <td><span class="sev Medium">Medium</span></td>
+    <td>The API accepts any characters in usernames (<code>user.schema.ts:6</code>); the frontend builds URLs by string concatenation without encoding (<code>profile.service.ts:19,27,33</code>). Fix: allow e.g. <code>[A-Za-z0-9_-]</code> only and encode path segments.</td>
+  </tr>
+  <tr>
+    <td class="n">10</td>
+    <td class="t"><b>No length or size limits: huge titles create unopenable articles and break the layout</b><span class="area">Validation · Performance</span><span class="ev">A9–A10 · BUG-10 · P11–P12</span></td>
+    <td><ol><li>New Article › paste a ~30,000-character title without spaces › Publish.</li><li>Go back to Home.</li></ol></td>
+    <td><span class="exp">title limited (e.g. ≤ 200 chars) with a message; oversized requests rejected (413).</span><span class="act">saved (201) but can never be opened — the URL is ~30 KB and the API answers 431 → blank page. In the feed the title stretches the page ~330,000 px wide. A 10 MB article body is also accepted.</span></td>
+    <td><span class="sev Medium">Medium</span></td>
+    <td>Schemas check <code>min(1)</code> but no <code>.max()</code> (<code>article.schema.ts:5</code>); the slug is built from the full title (<code>articles/index.post.ts:13</code>) and exceeds Node’s 16 KB request-header limit; no request-size limit; no CSS word-wrap for long words.</td>
+  </tr>
+  <tr>
+    <td class="n">11</td>
+    <td class="t"><b>Accessibility: fails WCAG 2.1 AA checks on every page</b><span class="area">Accessibility</span><span class="ev">A11 · BUG-11 (axe-core)</span></td>
+    <td><ol><li>Run axe DevTools (or test BUG-11) on Home, Sign up, Article, Editor, Settings.</li><li>Try to delete your own comment with the keyboard only (Tab).</li></ol></td>
+    <td><span class="exp">no serious/critical WCAG 2.1 AA violations; everything usable by keyboard.</span><span class="act">82 low-contrast text instances, 17 images without alt text, 13 links without a name, no page language — on all 5 pages; the delete-comment icon can’t be reached by keyboard. Fields have placeholders but no visible labels.</span></td>
+    <td><span class="sev Medium">Medium</span></td>
+    <td>Theme colours below the 4.5:1 contrast ratio; avatar <code>&lt;img&gt;</code> without <code>alt</code>; <code>&lt;html&gt;</code> without <code>lang</code> (<code>index.html:2</code>); a clickable <code>&lt;i class="ion-trash-a"&gt;</code> instead of a <code>&lt;button aria-label="Delete comment"&gt;</code> (<code>article-comment.component.ts:33</code>).</td>
+  </tr>
+  <tr>
+    <td class="n">12</td>
+    <td class="t"><b>Invalid paging parameters crash the API (HTTP 500); page size is unlimited</b><span class="area">API robustness</span><span class="ev">BUG-12 · P7, P7b</span></td>
+    <td><ol><li>Open <code>/api/articles?offset=-1</code></li><li>Open <code>/api/articles?limit=100000</code></li></ol></td>
+    <td><span class="exp">400/422 “offset must be ≥ 0”; <code>limit</code> capped (e.g. 100).</span><span class="act">(1) 500 Server Error — the dev build even returns the internal database-query error text. (2) accepted: every article comes back in one response (performance / abuse risk as data grows).</span></td>
+    <td><span class="sev Low">Low</span></td>
+    <td><code>skip: Number(query.offset) || 0</code> and <code>take: Number(query.limit) || 10</code> with no validation or clamping (<code>articles/index.get.ts:22–23</code>); the ORM error is not handled.</td>
+  </tr>
+  <tr>
+    <td class="n">13</td>
+    <td class="t"><b>Tags aren’t trimmed: “ news ” and “news” become two identical-looking tags</b><span class="area">Data quality</span><span class="ev">A12 · BUG-13 · P10</span></td>
+    <td><ol><li>New Article › type <code>&nbsp;&nbsp;news&nbsp;&nbsp;</code> (with spaces) as a tag › Enter › Publish.</li><li>Publish another article tagged <code>news</code>; look at “Popular Tags”.</li></ol></td>
+    <td><span class="exp">one tag “news”.</span><span class="act">two separate tags that look identical; filtering by “news” misses the article whose tag has spaces.</span></td>
+    <td><span class="sev Low">Low</span></td>
+    <td>The editor checks <code>tag.trim()</code> but stores the untrimmed value (<code>editor.component.ts:63</code>); the API accepts any string (<code>article.schema.ts:8</code>).</td>
+  </tr>
+  </tbody>
+</table>
+</section>
+
+<!-- ============================ RCA ============================ -->
+<section class="pb">
+<h2 style="margin-top:0">4. Root-cause analysis — #2 “Editing an article changes its web address”</h2>
+<div class="rca">
+<p><b>What happens.</b> Every time an author saves an article — even to fix a single typo in the body — the article gets a new address (in screenshots A2a → A2b, <code>/article/Our-release-notes-fc56afda</code> became <code>/article/Our-release-notes-cb171958</code>), and the old address answers 404, which the UI then shows as a blank page (#6).</p>
+<p><b>Why.</b> The API’s update handler creates a brand-new slug with a random 8-character suffix whenever the request contains a <code>title</code> field (<code>articles/[slug]/index.put.ts:35</code>) — it never checks whether the title actually changed. The Angular editor always submits the whole form — title, description, body and tags (<code>editor.component.ts:80</code>) — so a title is present on every save and a new slug is minted every time. The RealWorld documentation only says the slug is updated “when the title is changed”, and the project’s own API test updates the body <i>without</i> sending a title, which is why the automated suite never caught it: the bug only appears when this frontend is combined with this backend. Nothing keeps the previous slug, so every link shared on social media, in e-mails or indexed by search engines silently dies after each edit — a high-frequency problem, since editing is routine.</p>
+<p><b>How I would fix it.</b> (1) In the API, only mint a new slug when the new title differs from the stored one — a 3-line change that I applied locally and verified (below). (2) Longer term, keep a slug-history table and answer old slugs with a 301 redirect, so even real title changes never break links. (3) Have the editor send only the fields that changed. (4) Turn my Playwright reproduction (BUG-02) into a regression test in CI — against the patched API it now fails exactly at “the URL changed although the title did not”, which proves the fix.</p>
+</div>
+<pre><span class="cm">// server/routes/api/articles/[slug]/index.put.ts  (full diff: evidence/fix-bug02-stable-slug.diff)</span>
+     select: {
+<span class="add">+        title: true,</span>
+         author: { select: { id: true, username: true } },
+<span class="del">-    const newSlug = article.title ? `${slugify(article.title)}-${crypto.randomUUID().slice(0, 8)}` : null;</span>
+<span class="add">+    // Only mint a new slug when the title really changes (docs: "the slug also gets updated when the title is changed").</span>
+<span class="add">+    const titleChanged = article.title !== undefined &amp;&amp; article.title !== existingArticle.title;</span>
+<span class="add">+    const newSlug = titleChanged ? `${slugify(article.title!)}-${crypto.randomUUID().slice(0, 8)}` : null;</span></pre>
+<div class="box small"><b>Fix verification (evidence/fix-verification-bug02.txt):</b> body-only edit → slug unchanged ✔ · old link → HTTP 200 ✔ · genuine title change → slug still updated, as documented ✔ · reproduction test BUG-02 now fails at the “URL changed” assertion ✔. The patch was then reverted so all other results reflect the original app.</div>
+
+<h2>5. What works well (verified, not assumed)</h2>
+<ul class="tick">
+  <li>All core flows — sign-up, log-in, create, edit, comment, delete, log-out — pass the automated happy-path test.</li>
+  <li>Stored XSS is neutralised: <code>&lt;script&gt;</code>, <code>onerror=</code> and <code>javascript:</code> links in an article body do not execute (Angular sanitizer).</li>
+  <li>Authorization holds: another user gets 403 when editing or deleting my article or deleting my comment, and the content stays unchanged (probe P15).</li>
+  <li>Duplicate tags inside one article are merged into one (probe P9).</li>
+</ul>
+
+<h2>6. Other observations (not counted above)</h2>
+<ul>
+  <li>A user can follow themself through the API (the UI hides the button) — probe P14.</li>
+  <li>The API address is hard-coded in the frontend source (<code>api.interceptor.ts</code>), so switching environments needs a code change instead of configuration.</li>
+  <li>Article and profile pages render nothing while data is loading — no spinner or skeleton, so slow connections look like #6.</li>
+  <li>The brief’s live-demo link is outdated: <code>demo.realworld.io</code> returns 404; the project now lives at <code>demo.realworld.show</code>.</li>
+</ul>
+
+<h2>7. How to reproduce everything</h2>
+<pre>powershell -ExecutionPolicy Bypass -File setup\setup-realworld.ps1            <span class="cm"># once: pinned commits, install, create DB</span>
+powershell -ExecutionPolicy Bypass -File setup\start-realworld.ps1 -ResetDb  <span class="cm"># fresh, empty app on :4200 / :3000</span>
+cd task1-qa-report\qa-tests ; npm install ; node api-probes.mjs ; npx playwright test  <span class="cm"># evidence + 16 tests</span></pre>
+</section>
+
+<!-- ============================ APPENDIX A (landscape) ============================ -->
+<section class="wide pb">
+<h2 style="margin-top:0">Appendix A — Screenshots (captured automatically by the Playwright tests; the dark bar shows the page URL)</h2>
+<div class="shots">
+  <figure><img src="../screenshots/bug01-feed-loading-forever.png"><figcaption><b>A1 · #1</b> API unreachable: after 10 s the feed and tags still say “Loading…”. No error, no retry.</figcaption></figure>
+  <figure><img src="../screenshots/bug02-a-original-url.png"><figcaption><b>A2a · #2</b> The article at its original URL (the link an author would share).</figcaption></figure>
+  <figure><img src="../screenshots/bug02-b-new-url-after-edit.png"><figcaption><b>A2b · #2</b> After changing only the body, the same article lives at a <b>new</b> URL (different suffix).</figcaption></figure>
+  <figure><img src="../screenshots/bug02-c-old-link-broken.png"><figcaption><b>A3 · #2 + #6</b> Opening the original link now: API 404, and the user sees a blank page.</figcaption></figure>
+</div>
+</section>
+<section class="wide pb">
+<div class="shots">
+  <figure><img src="../screenshots/bug05-b-weak-signup-accepted.png"><figcaption><b>A4 · #5</b> Account created with e-mail “not-an-email-…” and password “a”, and logged straight in.</figcaption></figure>
+  <figure><img src="../screenshots/bug06-blank-not-found-page.png"><figcaption><b>A5 · #6</b> Non-existent article: the API sends “article not found”, the page shows nothing.</figcaption></figure>
+  <figure><img src="../screenshots/bug07-c-silent-delete-failure.png"><figcaption><b>A6 · #7</b> Server error on delete: no message at all; the user stays on the page. (Without an error, deletion is instant and permanent — no confirmation.)</figcaption></figure>
+  <figure><img src="../screenshots/bug08-case-sensitive-login.png"><figcaption><b>A7 · #8</b> Registered with capital letters; the same address in lower case + correct password → “credentials invalid”.</figcaption></figure>
+</div>
+</section>
+<section class="wide pb">
+<div class="shots">
+  <figure><img src="../screenshots/bug09-profile-unreachable.png"><figcaption><b>A8 · #9</b> User “qa?tester_…” clicks their own name: the app requests user “qa” (404) and shows a blank page.</figcaption></figure>
+  <figure><img src="../screenshots/bug10-a-long-title-unopenable.png"><figcaption><b>A9 · #10</b> A ~30,000-character title is saved (201) but the article can never be opened (431) → blank page.</figcaption></figure>
+  <figure><img src="../screenshots/bug10-b-feed-layout-broken.png"><figcaption><b>A10 · #10</b> The same article in the feed: the unbroken title runs off the page (~330,000 px horizontal overflow).</figcaption></figure>
+  <figure><img src="../screenshots/bug11-a11y-home-violations.png"><figcaption><b>A11 · #11</b> axe-core findings on Home: orange = low contrast, red = image without alt text, purple = link without a name.</figcaption></figure>
+</div>
+</section>
+<section class="wide pb">
+<div class="shots">
+  <figure><img src="../screenshots/bug13-duplicate-looking-tags.png"><figcaption><b>A12 · #13</b> “Popular Tags” lists the same-looking tag twice — one copy was typed with spaces.</figcaption></figure>
+  <figure><img src="../screenshots/flow-02-article-created.png"><figcaption><b>A13 · passes</b> For contrast: the normal create flow works — the article is published and displayed.</figcaption></figure>
+</div>
+</section>
+
+</body>
+</html>

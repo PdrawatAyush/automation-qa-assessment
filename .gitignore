@@ -1,0 +1,12 @@
+# Local runtime - never commit:
+#  - the app under test (cloned by setup/setup-realworld.ps1)
+#  - the n8n install and its data folder (database, ENCRYPTION KEY, credentials)
+#  - generated local test secrets (.local/n8n-local.json), logs
+.local/
+
+# Dependencies and test artefacts
+node_modules/
+task1-qa-report/qa-tests/test-results/
+
+# Personal walkthrough / interview notes (remove this line if you want to publish them)
+EXPLANATION.md

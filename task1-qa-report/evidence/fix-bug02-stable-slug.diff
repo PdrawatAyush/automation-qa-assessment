@@ -1,0 +1,23 @@
+diff --git a/server/routes/api/articles/[slug]/index.put.ts b/server/routes/api/articles/[slug]/index.put.ts
+index b6af6ec..8d6fbcd 100644
+--- a/server/routes/api/articles/[slug]/index.put.ts
++++ b/server/routes/api/articles/[slug]/index.put.ts
+@@ -15,6 +15,7 @@ export default definePrivateEventHandler(async (event, {auth}) => {
+             slug,
+         },
+         select: {
++            title: true,
+             author: {
+                 select: {
+                     id: true,
+@@ -32,7 +33,9 @@ export default definePrivateEventHandler(async (event, {auth}) => {
+         throw new HttpException(403, {errors: {article: ['forbidden']}});
+     }
+ 
+-    const newSlug = article.title ? `${slugify(article.title)}-${crypto.randomUUID().slice(0, 8)}` : null;
++    // Only mint a new slug when the title really changes (docs: "the slug also gets updated when the title is changed").
++    const titleChanged = article.title !== undefined && article.title !== existingArticle.title;
++    const newSlug = titleChanged ? `${slugify(article.title!)}-${crypto.randomUUID().slice(0, 8)}` : null;
+ 
+     const hasTagList = Array.isArray(article.tagList);
+ 
