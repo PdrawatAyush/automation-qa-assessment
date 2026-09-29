@@ -1,0 +1,360 @@
+{
+  "tool": "axe-core 4.13.0",
+  "rules": [
+    "wcag2a",
+    "wcag2aa",
+    "wcag21a",
+    "wcag21aa"
+  ],
+  "summary": {
+    "/register (signed out)": {
+      "color-contrast": "serious, 5 element(s)",
+      "html-has-lang": "serious, 1 element(s)"
+    },
+    "/ (home, signed out)": {
+      "color-contrast": "serious, 48 element(s)",
+      "html-has-lang": "serious, 1 element(s)",
+      "image-alt": "critical, 10 element(s)",
+      "link-name": "serious, 10 element(s)"
+    },
+    "/article/:slug (signed in, own comment)": {
+      "color-contrast": "serious, 18 element(s)",
+      "html-has-lang": "serious, 1 element(s)",
+      "image-alt": "critical, 5 element(s)",
+      "link-name": "serious, 3 element(s)"
+    },
+    "/editor (signed in)": {
+      "color-contrast": "serious, 5 element(s)",
+      "html-has-lang": "serious, 1 element(s)",
+      "image-alt": "critical, 1 element(s)"
+    },
+    "/settings (signed in)": {
+      "color-contrast": "serious, 6 element(s)",
+      "html-has-lang": "serious, 1 element(s)",
+      "image-alt": "critical, 1 element(s)"
+    }
+  },
+  "trashIcon": {
+    "tag": "I",
+    "tabIndex": -1,
+    "role": null,
+    "name": ""
+  },
+  "focusedWhileTabbing": [
+    "A.",
+    "A.author",
+    "BUTTON.btn btn-sm action-btn btn-outline-secondary",
+    "BUTTON.btn btn-sm btn-outline-primary",
+    "A.",
+    "A.author",
+    "BUTTON.btn btn-sm action-btn btn-outline-secondary",
+    "BUTTON.btn btn-sm btn-outline-primary",
+    "TEXTAREA.form-control ng-untouched ng-pristine ng-valid",
+    "BUTTON.btn btn-sm btn-primary",
+    "A.comment-author",
+    "A.comment-author",
+    "A.logo-font",
+    "A.",
+    "BODY.",
+    "A.navbar-brand",
+    "A.nav-link",
+    "A.nav-link",
+    "A.nav-link",
+    "A.nav-link",
+    "A.",
+    "A.author",
+    "BUTTON.btn btn-sm action-btn btn-outline-secondary",
+    "BUTTON.btn btn-sm btn-outline-primary",
+    "A.",
+    "A.author",
+    "BUTTON.btn btn-sm action-btn btn-outline-secondary",
+    "BUTTON.btn btn-sm btn-outline-primary",
+    "TEXTAREA.form-control ng-pristine ng-valid ng-touched",
+    "BUTTON.btn btn-sm btn-primary",
+    "A.comment-author",
+    "A.comment-author",
+    "A.logo-font",
+    "A.",
+    "BODY.",
+    "A.navbar-brand",
+    "A.nav-link",
+    "A.nav-link",
+    "A.nav-link",
+    "A.nav-link"
+  ],
+  "placeholderOnlyFieldsOnRegister": 3,
+  "lang": null,
+  "report": {
+    "/register (signed out)": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=axeAPI",
+        "count": 5,
+        "targets": [
+          ".nav-link[routerlink=\"/\"][href=\"/\"]",
+          "a[routerlink=\"/login\"]",
+          ".nav-signup",
+          "p > a[href$=\"login\"]",
+          "span"
+        ]
+      },
+      {
+        "id": "html-has-lang",
+        "impact": "serious",
+        "help": "<html> element must have a lang attribute",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=axeAPI",
+        "count": 1,
+        "targets": [
+          "html"
+        ]
+      }
+    ],
+    "/ (home, signed out)": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=axeAPI",
+        "count": 48,
+        "targets": [
+          ".navbar-nav > .nav-item:nth-child(1) > .nav-link[routerlink=\"/\"][href=\"/\"]",
+          "a[routerlink=\"/login\"]",
+          ".nav-signup",
+          ".container[_ngcontent-ng-c4096712752=\"\"] > p",
+          "p > a[_ngcontent-ng-c4096712752=\"\"]:nth-child(1)",
+          "p > a[_ngcontent-ng-c4096712752=\"\"]:nth-child(2)",
+          ".active.nav-link[routerlink=\"/\"]",
+          ".author[href$=\"a11yauthor_08317b24\"]",
+          "app-article-preview:nth-child(1) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(1) > .article-preview > .preview-link > p",
+          "app-article-preview:nth-child(1) > .article-preview > .preview-link > span",
+          "app-article-preview:nth-child(1) > .article-preview > .preview-link > .tag-list > .tag-outline.tag-default.tag-pill",
+          "app-article-preview:nth-child(2) > .article-preview > app-article-meta > .article-meta > .info > .author[href$=\"tags_08f5d0cd\"]",
+          "app-article-preview:nth-child(2) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(2) > .article-preview > .preview-link > p",
+          "app-article-preview:nth-child(2) > .article-preview > .preview-link > span",
+          "app-article-preview:nth-child(2) > .article-preview > .preview-link > .tag-list > .tag-outline.tag-default.tag-pill",
+          "app-article-preview:nth-child(3) > .article-preview > app-article-meta > .article-meta > .info > .author[href$=\"tags_08f5d0cd\"]",
+          "app-article-preview:nth-child(3) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(3) > .article-preview > .preview-link > p",
+          "app-article-preview:nth-child(3) > .article-preview > .preview-link > span",
+          "app-article-preview:nth-child(3) > .article-preview > .preview-link > .tag-list > .tag-outline.tag-default.tag-pill",
+          "app-article-preview:nth-child(4) > .article-preview > app-article-meta > .article-meta > .info > .author[href$=\"long_2632d13f\"]",
+          "app-article-preview:nth-child(4) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "a[href$=\"Big-body-c1fd1edc\"] > span",
+          "app-article-preview:nth-child(5) > .article-preview > app-article-meta > .article-meta > .info > .author[href$=\"long_2632d13f\"]",
+          "app-article-preview:nth-child(5) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(5) > .article-preview > .preview-link > p",
+          "app-article-preview:nth-child(5) > .article-preview > .preview-link > span",
+          ".author[href$=\"delfail_bedb6837\"]",
+          "app-article-preview:nth-child(6) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(6) > .article-preview > .preview-link > p",
+          "app-article-preview:nth-child(6) > .article-preview > .preview-link > span",
+          ".author[href$=\"edit_8b3cecc4\"]",
+          "app-article-preview:nth-child(7) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(7) > .article-preview > .preview-link > p",
+          "app-article-preview:nth-child(7) > .article-preview > .preview-link > span",
+          ".author[href$=\"xss_cb355bf3\"]",
+          "app-article-preview:nth-child(8) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "a[href$=\"XSS-probe-3981d0c4\"] > p",
+          "a[href$=\"XSS-probe-3981d0c4\"] > span",
+          "app-article-preview:nth-child(9) > .article-preview > app-article-meta > .article-meta > .info > .author[href$=\"author_d18aad\"]",
+          "app-article-preview:nth-child(9) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(9) > .article-preview > .preview-link > span",
+          "app-article-preview:nth-child(10) > .article-preview > app-article-meta > .article-meta > .info > .author[href$=\"author_d18aad\"]",
+          "app-article-preview:nth-child(10) > .article-preview > app-article-meta > .article-meta > .info > .date",
+          "app-article-preview:nth-child(10) > .article-preview > .preview-link > span",
+          ".attribution"
+        ]
+      },
+      {
+        "id": "html-has-lang",
+        "impact": "serious",
+        "help": "<html> element must have a lang attribute",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=axeAPI",
+        "count": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "id": "image-alt",
+        "impact": "critical",
+        "help": "Images must have alternative text",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/image-alt?application=axeAPI",
+        "count": 10,
+        "targets": [
+          "a[href$=\"a11yauthor_08317b24\"] > img[src$=\"default-avatar.svg\"]",
+          "app-article-preview:nth-child(2) > .article-preview > app-article-meta > .article-meta > a[href$=\"tags_08f5d0cd\"] > img[src$=\"default-avatar.svg\"]",
+          "app-article-preview:nth-child(3) > .article-preview > app-article-meta > .article-meta > a[href$=\"tags_08f5d0cd\"] > img[src$=\"default-avatar.svg\"]",
+          "app-article-preview:nth-child(4) > .article-preview > app-article-meta > .article-meta > a[href$=\"long_2632d13f\"] > img[src$=\"default-avatar.svg\"]",
+          "app-article-preview:nth-child(5) > .article-preview > app-article-meta > .article-meta > a[href$=\"long_2632d13f\"] > img[src$=\"default-avatar.svg\"]",
+          "a[href$=\"delfail_bedb6837\"] > img[src$=\"default-avatar.svg\"]",
+          "a[href$=\"edit_8b3cecc4\"] > img[src$=\"default-avatar.svg\"]",
+          "a[href$=\"xss_cb355bf3\"] > img[src$=\"default-avatar.svg\"]",
+          "app-article-preview:nth-child(9) > .article-preview > app-article-meta > .article-meta > a[href$=\"author_d18aad\"] > img[src$=\"default-avatar.svg\"]",
+          "app-article-preview:nth-child(10) > .article-preview > app-article-meta > .article-meta > a[href$=\"author_d18aad\"] > img[src$=\"default-avatar.svg\"]"
+        ]
+      },
+      {
+        "id": "link-name",
+        "impact": "serious",
+        "help": "Links must have discernible text",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/link-name?application=axeAPI",
+        "count": 10,
+        "targets": [
+          ".article-meta > a[href$=\"a11yauthor_08317b24\"]",
+          "app-article-preview:nth-child(2) > .article-preview > app-article-meta > .article-meta > a[href$=\"tags_08f5d0cd\"]",
+          "app-article-preview:nth-child(3) > .article-preview > app-article-meta > .article-meta > a[href$=\"tags_08f5d0cd\"]",
+          "app-article-preview:nth-child(4) > .article-preview > app-article-meta > .article-meta > a[href$=\"long_2632d13f\"]",
+          "app-article-preview:nth-child(5) > .article-preview > app-article-meta > .article-meta > a[href$=\"long_2632d13f\"]",
+          ".article-meta > a[href$=\"delfail_bedb6837\"]",
+          ".article-meta > a[href$=\"edit_8b3cecc4\"]",
+          ".article-meta > a[href$=\"xss_cb355bf3\"]",
+          "app-article-preview:nth-child(9) > .article-preview > app-article-meta > .article-meta > a[href$=\"author_d18aad\"]",
+          "app-article-preview:nth-child(10) > .article-preview > app-article-meta > .article-meta > a[href$=\"author_d18aad\"]"
+        ]
+      }
+    ],
+    "/article/:slug (signed in, own comment)": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=axeAPI",
+        "count": 18,
+        "targets": [
+          ".nav-link[routerlink=\"/\"][routerlinkactive=\"active\"]",
+          "a[routerlink=\"/editor\"]",
+          "a[routerlink=\"/settings\"]",
+          ".nav-link[href$=\"a11yreader_9a4a1618\"][routerlinkactive=\"active\"]",
+          ".container > app-article-meta > .article-meta > .info > .date",
+          ".container > app-article-meta > .article-meta > span > app-follow-button > .action-btn.btn-outline-secondary",
+          ".container > app-article-meta > .article-meta > span > app-favorite-button > .btn-outline-primary",
+          ".container > app-article-meta > .article-meta > span > app-favorite-button > .btn-outline-primary > .counter",
+          ".tag-default",
+          ".article-actions > app-article-meta > .article-meta > .info > .author[href$=\"a11yauthor_08317b24\"]",
+          ".article-actions > app-article-meta > .article-meta > .info > .date",
+          ".article-actions > app-article-meta > .article-meta > span > app-follow-button > .action-btn.btn-outline-secondary",
+          ".article-actions > app-article-meta > .article-meta > span > app-favorite-button > .btn-outline-primary",
+          ".article-actions > app-article-meta > .article-meta > span > app-favorite-button > .btn-outline-primary > .counter",
+          ".btn-primary",
+          ".comment-author[href$=\"a11yreader_9a4a1618\"]:nth-child(2)",
+          ".date-posted",
+          ".attribution"
+        ]
+      },
+      {
+        "id": "html-has-lang",
+        "impact": "serious",
+        "help": "<html> element must have a lang attribute",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=axeAPI",
+        "count": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "id": "image-alt",
+        "impact": "critical",
+        "help": "Images must have alternative text",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/image-alt?application=axeAPI",
+        "count": 5,
+        "targets": [
+          ".user-pic",
+          ".container > app-article-meta > .article-meta > a[href$=\"a11yauthor_08317b24\"] > img[src$=\"default-avatar.svg\"]",
+          ".article-actions > app-article-meta > .article-meta > a[href$=\"a11yauthor_08317b24\"] > img[src$=\"default-avatar.svg\"]",
+          ".card-footer > .comment-author-img[src$=\"default-avatar.svg\"]",
+          ".comment-author[href$=\"a11yreader_9a4a1618\"]:nth-child(1) > .comment-author-img[src$=\"default-avatar.svg\"]"
+        ]
+      },
+      {
+        "id": "link-name",
+        "impact": "serious",
+        "help": "Links must have discernible text",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/link-name?application=axeAPI",
+        "count": 3,
+        "targets": [
+          ".container > app-article-meta > .article-meta > a[href$=\"a11yauthor_08317b24\"]",
+          ".article-actions > app-article-meta > .article-meta > a[href$=\"a11yauthor_08317b24\"]",
+          ".comment-author[href$=\"a11yreader_9a4a1618\"]:nth-child(1)"
+        ]
+      }
+    ],
+    "/editor (signed in)": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=axeAPI",
+        "count": 5,
+        "targets": [
+          ".nav-link[routerlink=\"/\"][routerlinkactive=\"active\"]",
+          "a[routerlink=\"/settings\"]",
+          "a[href$=\"a11yreader_9a4a1618\"]",
+          "button",
+          "span"
+        ]
+      },
+      {
+        "id": "html-has-lang",
+        "impact": "serious",
+        "help": "<html> element must have a lang attribute",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=axeAPI",
+        "count": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "id": "image-alt",
+        "impact": "critical",
+        "help": "Images must have alternative text",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/image-alt?application=axeAPI",
+        "count": 1,
+        "targets": [
+          ".user-pic"
+        ]
+      }
+    ],
+    "/settings (signed in)": [
+      {
+        "id": "color-contrast",
+        "impact": "serious",
+        "help": "Elements must meet minimum color contrast ratio thresholds",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=axeAPI",
+        "count": 6,
+        "targets": [
+          ".nav-link[routerlink=\"/\"][routerlinkactive=\"active\"]",
+          "a[routerlink=\"/editor\"]",
+          "a[href$=\"a11yreader_9a4a1618\"]",
+          ".btn-lg",
+          ".btn-outline-danger",
+          "span"
+        ]
+      },
+      {
+        "id": "html-has-lang",
+        "impact": "serious",
+        "help": "<html> element must have a lang attribute",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/html-has-lang?application=axeAPI",
+        "count": 1,
+        "targets": [
+          "html"
+        ]
+      },
+      {
+        "id": "image-alt",
+        "impact": "critical",
+        "help": "Images must have alternative text",
+        "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/image-alt?application=axeAPI",
+        "count": 1,
+        "targets": [
+          ".user-pic"
+        ]
+      }
+    ]
+  }
+}

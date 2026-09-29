@@ -1,0 +1,807 @@
+{
+  "name": "Bonus – Uptime Monitor (Conduit)",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## 🩺 Uptime Monitor — the Conduit app from Task 1\n**Every 5 minutes** GET the frontend and the API; anything other than **HTTP 200** is DOWN.\n\n**Retry logic:** the HTTP node tries 3× (5 s apart) before a check counts as DOWN → no alerts for one-off blips.\n**Response time:** measured per target (stamp → request → measure) inside a one-at-a-time loop.\n**Daily summary** at 09:00 IST: uptime %, avg / p95 / max response time, incidents, minutes down.\n\nTest hooks (header `X-Webhook-Token`): `GET /webhook/uptime-check`, `GET /webhook/uptime-report`",
+        "height": 300,
+        "width": 640,
+        "color": 7
+      },
+      "id": "5a6b7c8d-0501-4e5f-8a9b-000000000501",
+      "name": "Note: overview",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        -448
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 🔔 Alert on changes, not on every check\n🔴 **DOWN** once · 🔴 reminder every **30 min** while still down · 🟢 **RECOVERED** with the downtime.\n\n**State** (up/down, last alert, stats) is kept in the n8n **Data Table** `uptime_state`, read at run time, and production runs are serialized (`N8N_CONCURRENCY_PRODUCTION_LIMIT=1`). Testing showed that workflow static data is snapshotted when a run is created, so two overlapping checks both alerted — this design fixes that.",
+        "height": 270,
+        "width": 620,
+        "color": 4
+      },
+      "id": "5a6b7c8d-0502-4e5f-8a9b-000000000502",
+      "name": "Note: alerting",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        -464
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "id": "5a6b7c8d-0503-4e5f-8a9b-000000000503",
+      "name": "Every 5 minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        -48
+      ]
+    },
+    {
+      "parameters": {
+        "path": "uptime-check",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "5a6b7c8d-0504-4e5f-8a9b-000000000504",
+      "name": "Webhook: check now",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        160
+      ],
+      "webhookId": "8c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jgL9BJ1e9Kkmfq80",
+          "name": "Local webhook token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// What to monitor: the Conduit app tested in Task 1 - its frontend and its API.\nreturn [\n  { json: { name: 'Conduit web (frontend)', url: 'http://localhost:4200/' } },\n  { json: { name: 'Conduit API', url: 'http://localhost:3000/api/tags' } },\n];"
+      },
+      "id": "5a6b7c8d-0505-4e5f-8a9b-000000000505",
+      "name": "Targets",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "5a6b7c8d-0506-4e5f-8a9b-000000000506",
+      "name": "Loop over targets",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        480,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5a6b7c8d-0507-4e5f-8a9b-000000000507",
+              "name": "t0",
+              "value": "={{ $now.toMillis() }}",
+              "type": "number"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "5a6b7c8d-0508-4e5f-8a9b-000000000508",
+      "name": "Stamp start time",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        720,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "5a6b7c8d-0509-4e5f-8a9b-000000000509",
+      "name": "HTTP: check target",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        960,
+        240
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Status + response time for one target (the HTTP node already retried 3x before giving up).\nconst target = $('Stamp start time').item.json;\nconst elapsed = Date.now() - target.t0;\nconst err = $json.error;\nconst status = err ? (err.httpCode ? Number(err.httpCode) : null) : $json.statusCode;\nconst up = status === 200;\nconst reason = up ? 'HTTP 200'\n  : status ? `HTTP ${status}`\n  : String(err?.code ?? err?.message ?? 'no response').slice(0, 120);\nreturn { json: { name: target.name, url: target.url, up, status, ms: up ? elapsed : null, reason, checkedAt: new Date().toISOString() } };"
+      },
+      "id": "5a6b7c8d-0510-4e5f-8a9b-000000000510",
+      "name": "Measure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// The loop emits one item per target - bundle them into one item for the decision step.\nreturn [{ json: { results: $input.all().map(i => i.json) } }];"
+      },
+      "id": "5a6b7c8d-0511-4e5f-8a9b-000000000511",
+      "name": "Collect results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "uptime_state"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "key",
+              "keyValue": "uptime"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "id": "5a6b7c8d-0512-4e5f-8a9b-000000000512",
+      "name": "Read state",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        960,
+        -64
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Alert on CHANGES, not on every check: DOWN once, a reminder every 30 min while still down,\n// and RECOVERED when it comes back. The state lives in the Data Table \"uptime_state\", read when\n// this runs. (Workflow static data is NOT used: n8n snapshots it when an execution is created,\n// so a queued/overlapping run would decide on stale state and send a duplicate alert.)\nconst results = $('Collect results').first().json.results;\nconst row = $input.all().map(i => i.json).find(r => r.key === 'uptime');\nconst state = row?.state ? JSON.parse(row.state) : { targets: {}, since: new Date().toISOString() };\nconst REMIND_EVERY_MIN = 30;\nconst now = Date.now();\nconst alerts = [];\n\nfor (const r of results) {\n  const t = state.targets[r.name] = state.targets[r.name] ?? { status: 'up', checks: 0, upChecks: 0, times: [], incidents: 0, downMs: 0 };\n  t.checks++;\n  if (r.up) { t.upChecks++; t.times.push(r.ms); if (t.times.length > 400) t.times.shift(); }\n\n  if (!r.up && t.status === 'up') {\n    Object.assign(t, { status: 'down', downSince: now, lastAlertAt: now, incidents: t.incidents + 1 });\n    alerts.push(`🔴 **${r.name} is DOWN** — ${r.reason} (confirmed after 3 attempts)\\n${r.url}`);\n  } else if (!r.up && t.status === 'down' && now - t.lastAlertAt >= REMIND_EVERY_MIN * 60000) {\n    t.lastAlertAt = now;\n    alerts.push(`🔴 **${r.name} still DOWN** for ${minutes(now - t.downSince)} — ${r.reason}`);\n  } else if (r.up && t.status === 'down') {\n    const downFor = now - t.downSince;\n    Object.assign(t, { status: 'up', downMs: t.downMs + downFor, downSince: null });\n    alerts.push(`🟢 **${r.name} recovered** — HTTP 200 in ${r.ms} ms after ${minutes(downFor)} down`);\n  }\n  t.last = { status: r.status, ms: r.ms, at: r.checkedAt };\n}\n\nreturn [{\n  json: {\n    key: 'uptime',\n    state: JSON.stringify(state),\n    checked: results.length,\n    up: results.filter(r => r.up).length,\n    alertCount: alerts.length,\n    content: alerts.join('\\n\\n'),\n    results: results.map(r => `${r.name}: ${r.up ? `UP (${r.ms} ms)` : `DOWN (${r.reason})`}`),\n  },\n}];\n\nfunction minutes(ms) { const m = Math.round(ms / 60000); return m < 1 ? 'under a minute' : `${m} min`; }"
+      },
+      "id": "5a6b7c8d-0513-4e5f-8a9b-000000000513",
+      "name": "Decide & alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "uptime_state"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "key",
+              "keyValue": "uptime"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key": "uptime",
+            "state": "={{ $json.state }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "key",
+              "displayName": "key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5a6b7c8d-0514-4e5f-8a9b-000000000514",
+      "name": "Save state",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1440,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "5a6b7c8d-0515-4e5f-8a9b-000000000515",
+              "leftValue": "={{ $('Decide & alert').first().json.alertCount }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "5a6b7c8d-0516-4e5f-8a9b-000000000516",
+      "name": "IF: anything to alert?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1680,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $('Decide & alert').first().json.content }}",
+        "options": {
+          "username": "Uptime Monitor",
+          "wait": true
+        }
+      },
+      "id": "5a6b7c8d-0517-4e5f-8a9b-000000000517",
+      "name": "Discord: uptime alert",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        -160
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "webhookId": "fbf48b08-071d-4b1a-96ac-f670b2649d6b",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "dnRPuzOjseUFkk5b",
+          "name": "Discord webhook – Morning Brief"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5a6b7c8d-0518-4e5f-8a9b-000000000518",
+              "name": "checked",
+              "value": "={{ $('Decide & alert').first().json.checked }}",
+              "type": "number"
+            },
+            {
+              "id": "5a6b7c8d-0519-4e5f-8a9b-000000000519",
+              "name": "up",
+              "value": "={{ $('Decide & alert').first().json.up }}",
+              "type": "number"
+            },
+            {
+              "id": "5a6b7c8d-0520-4e5f-8a9b-000000000520",
+              "name": "alertsSent",
+              "value": "={{ $('Decide & alert').first().json.alertCount }}",
+              "type": "number"
+            },
+            {
+              "id": "5a6b7c8d-0521-4e5f-8a9b-000000000521",
+              "name": "results",
+              "value": "={{ $('Decide & alert').first().json.results }}",
+              "type": "array"
+            },
+            {
+              "id": "5a6b7c8d-0522-4e5f-8a9b-000000000522",
+              "name": "executionId",
+              "value": "={{ $execution.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5a6b7c8d-0523-4e5f-8a9b-000000000523",
+      "name": "Check summary",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2160,
+        -64
+      ]
+    },
+    {
+      "parameters": {
+        "content": "### 📊 Daily summary (09:00 IST)\nReads the stats from the Data Table, posts uptime % and avg / p95 / max response time per target to Discord, then starts a new reporting period.",
+        "height": 170,
+        "width": 540,
+        "color": 6
+      },
+      "id": "5a6b7c8d-0524-4e5f-8a9b-000000000524",
+      "name": "Note: daily",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1152,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "5a6b7c8d-0525-4e5f-8a9b-000000000525",
+      "name": "Every day at 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "path": "uptime-report",
+        "authentication": "headerAuth",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "5a6b7c8d-0526-4e5f-8a9b-000000000526",
+      "name": "Webhook: report now",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        688
+      ],
+      "webhookId": "9d2e3f4a-5b6c-4d7e-8f9a-0b1c2d3e4f5a",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "jgL9BJ1e9Kkmfq80",
+          "name": "Local webhook token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "uptime_state"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "key",
+              "keyValue": "uptime"
+            }
+          ]
+        },
+        "returnAll": true
+      },
+      "id": "5a6b7c8d-0527-4e5f-8a9b-000000000527",
+      "name": "Read state (daily)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        592
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Daily report from the stats gathered by the 5-minute checks, then start a new period.\nconst row = $input.all().map(i => i.json).find(r => r.key === 'uptime');\nconst state = row?.state ? JSON.parse(row.state) : { targets: {} };\nconst now = Date.now();\nconst lines = Object.entries(state.targets).map(([name, t]) => {\n  const uptime = t.checks ? (100 * t.upChecks / t.checks).toFixed(2) + '%' : 'n/a';\n  const times = [...t.times].sort((a, b) => a - b);\n  const avg = times.length ? Math.round(times.reduce((a, b) => a + b, 0) / times.length) : '–';\n  const p95 = times.length ? times[Math.ceil(0.95 * times.length) - 1] : '–';\n  const max = times.length ? times[times.length - 1] : '–';\n  const downMin = Math.round((t.downMs + (t.status === 'down' ? now - t.downSince : 0)) / 60000);\n  return `${t.status === 'down' ? '🔴' : '🟢'} **${name}** — ${uptime} up (${t.upChecks}/${t.checks} checks) · avg ${avg} ms · p95 ${p95} ms · max ${max} ms · ${t.incidents} incident(s), ${downMin} min down`;\n});\nconst since = state.since ? DateTime.fromISO(state.since).setZone('Asia/Kolkata').toFormat('dd LLL HH:mm') : 'start';\nconst content = lines.length\n  ? `📊 **Daily uptime report — Conduit** (since ${since} IST)\\n${lines.join('\\n')}`\n  : '📊 **Daily uptime report — Conduit**: no checks recorded yet.';\n\n// New reporting period (current up/down status is kept).\nfor (const t of Object.values(state.targets)) {\n  Object.assign(t, { checks: 0, upChecks: 0, times: [], downMs: 0, incidents: t.status === 'down' ? 1 : 0 });\n  if (t.status === 'down') t.downSince = now;\n}\nstate.since = new Date(now).toISOString();\nreturn [{ json: { key: 'uptime', state: JSON.stringify(state), content, targets: lines.length } }];"
+      },
+      "id": "5a6b7c8d-0528-4e5f-8a9b-000000000528",
+      "name": "Daily summary",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "dataTableId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "uptime_state"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "key",
+              "keyValue": "uptime"
+            }
+          ]
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "key": "uptime",
+            "state": "={{ $json.state }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "key",
+              "displayName": "key",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "state",
+              "displayName": "state",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5a6b7c8d-0529-4e5f-8a9b-000000000529",
+      "name": "Save state (daily)",
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        592
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "webhook",
+        "content": "={{ $('Daily summary').first().json.content }}",
+        "options": {
+          "username": "Uptime Monitor",
+          "wait": true
+        }
+      },
+      "id": "5a6b7c8d-0530-4e5f-8a9b-000000000530",
+      "name": "Discord: daily summary",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        960,
+        592
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "webhookId": "2579d9e6-5ed4-4f9d-8055-c47d489ddb11",
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "dnRPuzOjseUFkk5b",
+          "name": "Discord webhook – Morning Brief"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every 5 minutes": {
+      "main": [
+        [
+          {
+            "node": "Targets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook: check now": {
+      "main": [
+        [
+          {
+            "node": "Targets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Targets": {
+      "main": [
+        [
+          {
+            "node": "Loop over targets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop over targets": {
+      "main": [
+        [
+          {
+            "node": "Collect results",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stamp start time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stamp start time": {
+      "main": [
+        [
+          {
+            "node": "HTTP: check target",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP: check target": {
+      "main": [
+        [
+          {
+            "node": "Measure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Measure": {
+      "main": [
+        [
+          {
+            "node": "Loop over targets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect results": {
+      "main": [
+        [
+          {
+            "node": "Read state",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read state": {
+      "main": [
+        [
+          {
+            "node": "Decide & alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide & alert": {
+      "main": [
+        [
+          {
+            "node": "Save state",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save state": {
+      "main": [
+        [
+          {
+            "node": "IF: anything to alert?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: anything to alert?": {
+      "main": [
+        [
+          {
+            "node": "Discord: uptime alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Check summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Discord: uptime alert": {
+      "main": [
+        [
+          {
+            "node": "Check summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Every day at 09:00": {
+      "main": [
+        [
+          {
+            "node": "Read state (daily)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook: report now": {
+      "main": [
+        [
+          {
+            "node": "Read state (daily)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read state (daily)": {
+      "main": [
+        [
+          {
+            "node": "Daily summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily summary": {
+      "main": [
+        [
+          {
+            "node": "Save state (daily)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save state (daily)": {
+      "main": [
+        [
+          {
+            "node": "Discord: daily summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "Asia/Kolkata",
+    "errorWorkflow": "a8L2bNxribOMRMFr",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "a6212294-1e22-4b33-a058-af747df9d27f",
+  "meta": {
+    "instanceId": "25e460cd045fc3f3a2c029ff1414c72ba776959b8a5cd2f628ec647581d5129a"
+  },
+  "nodeGroups": [],
+  "id": "Zxwt3pX3AxntEB7Y",
+  "tags": []
+}

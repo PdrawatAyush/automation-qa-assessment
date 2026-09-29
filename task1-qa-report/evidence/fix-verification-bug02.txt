@@ -1,0 +1,13 @@
+Fix verification for BUG-02 (2026-09-29T22:21:19+05:30)
+Patch: evidence/fix-bug02-stable-slug.diff applied to the local API
+
+1) body-only edit (editor sends unchanged title too): slug before = Fix-check-f0129d55-b9ef9129 | after = Fix-check-f0129d55-b9ef9129 | unchanged = true
+2) old link after body edit: GET -> 200
+3) real title change still updates the slug (as documented): Fix-check-f0129d55-b9ef9129 -> Renamed-f0129d55-271dc556
+
+Reproduction test BUG-02 against the patched API (expected to FAIL now = bug fixed):
+    Error: expect(received).not.toBe(expected) // Object.is equality
+    Expected: not "Our-release-notes-3c2f2d34"
+    > 41 |   expect(newSlug).not.toBe(article.slug); // the URL changed although the title did not
+    test-results\02-bug-reproductions--BUG--0a441-xpected-URL-stays-the-same-\test-failed-1.png
+  1 failed
