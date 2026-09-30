@@ -7,6 +7,3 @@
 # Dependencies and test artefacts
 node_modules/
 task1-qa-report/qa-tests/test-results/
-
-# Personal walkthrough / interview notes (remove this line if you want to publish them)
-EXPLANATION.md
