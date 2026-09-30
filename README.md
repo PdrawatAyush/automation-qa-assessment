@@ -7,7 +7,7 @@ Everything here runs on my own Windows machine (Node 24, n8n 2.41.3).
 | Folder | What it is |
 |---|---|
 | `task1-qa-report/` | QA report on the RealWorld "Conduit" app: the PDF, screenshots, and the tests that reproduce every bug |
-| `task2-n8n-workflow/` | n8n workflow that posts a daily GitHub digest to Discord, plus its README and tests |
+| `task2-n8n-workflow/` | n8n workflow that posts an hourly GitHub digest to Discord, plus its README and tests |
 | `bonus-uptime-monitor/` | n8n workflow that checks the Task 1 app every 5 minutes and alerts on downtime |
 | `setup/` | Scripts to install and start everything |
 
